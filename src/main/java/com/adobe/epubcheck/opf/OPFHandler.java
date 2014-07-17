@@ -32,6 +32,7 @@ import com.adobe.epubcheck.api.Report;
 import com.adobe.epubcheck.util.DateParser;
 import com.adobe.epubcheck.util.EPUBVersion;
 import com.adobe.epubcheck.util.FeatureEnum;
+import com.adobe.epubcheck.util.HandlerUtil;
 import com.adobe.epubcheck.util.InvalidDateException;
 import com.adobe.epubcheck.util.Messages;
 import com.adobe.epubcheck.util.PathUtil;
@@ -82,6 +83,8 @@ public class OPFHandler implements XMLHandler {
 	boolean opf12PackageFile = false;
 
 	EPUBVersion version;
+
+	private boolean checkedUnsupportedXmlVersion = false;
 
 	static {
 		String[] list = { "acp", "act", "adp", "aft", "anl", "anm", "ann",
@@ -189,7 +192,11 @@ public class OPFHandler implements XMLHandler {
 	}
 
 	public void startElement() {
-		
+		if (!checkedUnsupportedXmlVersion) {
+			HandlerUtil.checkXMLVersion(parser);
+			checkedUnsupportedXmlVersion = true;
+		}
+
 		boolean registerEntry = true;
 		XMLElement e = parser.getCurrentElement();
 		String ns = e.getNamespace();

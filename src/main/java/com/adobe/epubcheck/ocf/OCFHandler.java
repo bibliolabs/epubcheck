@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.adobe.epubcheck.util.HandlerUtil;
 import com.adobe.epubcheck.xml.XMLElement;
 import com.adobe.epubcheck.xml.XMLHandler;
 import com.adobe.epubcheck.xml.XMLParser;
@@ -37,6 +38,8 @@ public class OCFHandler implements OCFData, XMLHandler {
 	private Map<String,List<String>> entries = new HashMap<String, List<String>>();
 
 	XMLParser parser;
+
+	private boolean checkedUnsupportedXmlVersion = false;
 
 	OCFHandler(XMLParser parser) {
 		this.parser = parser;
@@ -61,6 +64,11 @@ public class OCFHandler implements OCFData, XMLHandler {
 	}
 
 	public void startElement() {
+		if (!checkedUnsupportedXmlVersion) {
+			HandlerUtil.checkXMLVersion(parser);
+			checkedUnsupportedXmlVersion = true;
+		}
+
 		XMLElement e = parser.getCurrentElement();
 		String ns = e.getNamespace();
 		if (e.getName().equals("rootfile") && ns != null

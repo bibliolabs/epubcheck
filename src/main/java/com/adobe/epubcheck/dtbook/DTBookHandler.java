@@ -25,6 +25,7 @@ package com.adobe.epubcheck.dtbook;
 import com.adobe.epubcheck.opf.XRefChecker;
 import com.adobe.epubcheck.ops.OPSHandler;
 import com.adobe.epubcheck.util.FeatureEnum;
+import com.adobe.epubcheck.util.HandlerUtil;
 import com.adobe.epubcheck.util.PathUtil;
 import com.adobe.epubcheck.xml.XMLElement;
 import com.adobe.epubcheck.xml.XMLHandler;
@@ -33,10 +34,9 @@ import com.adobe.epubcheck.xml.XMLParser;
 public class DTBookHandler implements XMLHandler {
 
 	XMLParser parser;
-
 	String path;
-
 	XRefChecker xrefChecker;
+	private boolean checkedUnsupportedXmlVersion = false;
 
 	DTBookHandler(XMLParser parser, String path, XRefChecker xrefChecker) {
 		this.parser = parser;
@@ -51,6 +51,11 @@ public class DTBookHandler implements XMLHandler {
 	}
 
 	public void startElement() {
+		if (!checkedUnsupportedXmlVersion) {
+			HandlerUtil.checkXMLVersion(parser);
+			checkedUnsupportedXmlVersion = true;
+		}
+
 		XMLElement e = parser.getCurrentElement();
 		String ns = e.getNamespace();
 		String name = e.getName();
