@@ -36,7 +36,7 @@ public class StressTest {
 	 * parameters, make sure the temp directory exists and is empty - uncomment
 	 * and run.
 	 */
-	String TEMP_DIR_PATH = "/Users/mgylling/ec_temp/";
+	String TEMP_DIR_PATH = Files.createTempDir().getAbsolutePath();
 	int GROW = 2000;
 	String STRING_FMT = "%05d";
 
