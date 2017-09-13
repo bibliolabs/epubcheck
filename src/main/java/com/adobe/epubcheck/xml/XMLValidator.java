@@ -115,8 +115,13 @@ public class XMLValidator {
 						URI baseURI = new URI(base);
 						if ("zip".equals(baseURI.getScheme())
 								|| "jar".equals(baseURI.getScheme())) {
-							uriRef = new URL(new URL(base), uriRef)
-									.toExternalForm();
+							String ssp = baseURI.getSchemeSpecificPart();
+							//-- This deals with the Spring Boot Jar URL loader
+							if (ssp != null && !ssp.isEmpty()) {
+								uriRef = new URI(ssp).resolve(uriRef).toASCIIString();
+								uriRef = String.format("%s:%s", baseURI.getScheme(), uriRef);
+							}
+							uriRef = new URL(new URL(base), uriRef).toExternalForm();
 							// OXYGEN PATCH END
 						} else {
 							uriRef = baseURI.resolve(uri).toString();
